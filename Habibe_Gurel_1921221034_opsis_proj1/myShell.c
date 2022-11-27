@@ -13,30 +13,56 @@
 int main()
 {
     char command[100];
-
+    int control = 0; // cat'e girme durumu
+    int inputControl = 0;
     while (1)
     {
         printf("myshell>>");
         fgets(command, 100, stdin); // reads the input
-        if (strcmp(command, "exit\n") == 0)
-        { // compare
-            exit(0);
+        char *token = strtok(command, " ");
+        while (token != NULL)
+        { // cat
+            if (strcmp(token, "cat") == 0)
+            {
+                printf("%s:", token);
+                control = 1;
+            }
+            else if (control == 1)
+            {
+                printf(" %s", token);
+            }
+            token = strtok(NULL, " ");
+            if (control == 0)
+            {
+
+                if (strcmp(command, "exit\n") == 0)
+                { // compare
+                    exit(0);
+                }
+                if (strcmp(command, "bash\n") == 0)
+                {
+                    bash();
+                }
+                else if (strcmp(command, "ls\n") == 0)
+                {
+                    ls();
+                }
+                else if (strcmp(command, "clear\n") == 0)
+                {
+                    system("clear");
+                }
+                else
+                {
+                    if (inputControl == 0)
+                    {
+                        printf("Entered invalid input\n");
+                        inputControl++;
+                    }
+                }
+            }
         }
-        else if (strcmp(command, "bash\n") == 0)
-        {
-            bash();
-        }
-        else if (strcmp(command, "ls\n") == 0)
-        {
-            ls();
-        }
-        else if (strcmp(command, "clear\n") == 0)
-        {
-            system("clear");
-        }
-        else if (strcmp(command, "cat\n") == 0)
-        {
-        }
+        control = 0;
+        inputControl = 0;
     }
 }
 
