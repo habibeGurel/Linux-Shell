@@ -10,32 +10,29 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <time.h>
-
+//
 int main()
 {
+    char input[50];
+    read(3, input, 50);
+    char *fileName = strtok(input, "\n");
     time_t rawtime; // takes current time
     time(&rawtime);
-    struct tm *timeinfo = localtime(&rawtime);
+    struct tm *systime = localtime(&rawtime);//takes system time
     int pid = getpid();
     int ppid = getppid();
-    char file[50];
-    read(3, file, 50);
-    char *fileName = strtok(file, "\n");
 
-    if (access(fileName, 0) == 0)
-    { // if file is already exist
-        FILE *input = fopen(fileName, "a");
-        fprintf(input, "system time: %s", asctime(timeinfo));
-        fprintf(input, "pid: %d", pid);
-        fprintf(input, "ppid: %d", ppid);
-        fclose(input);
+    if (access(fileName, 0) != 0)
+    { // if file is not exist
+        FILE *file = fopen(fileName, "w");// "w" is creates a new file and write on it
+        fprintf(file, "system time: %s pid: %d ppid: %d\n",strtok(asctime(systime),"\n"),pid,ppid);// information is printed side by side
+        fclose(file);
     }
     else
-    {
-        FILE *input = fopen(fileName, "w");
-        fprintf(input, "system time: %s", asctime(timeinfo));
-        fprintf(input, "pid: %d", pid);
-        fprintf(input, "ppid: %d", ppid);
-        fclose(input);
+    {// if file is already exist
+        FILE *file = fopen(fileName, "a");// "a" appends to existing file
+        fprintf(file, "system time: %s pid: %d ppid: %d\n",strtok(asctime(systime),"\n"),pid,ppid);// information is printed side by side
+        fclose(file);
     }
+    return 0;
 }
